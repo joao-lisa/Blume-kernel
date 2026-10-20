@@ -13,7 +13,7 @@
 ## Thanks & Credits
 
 - **[LineageOS](https://github.com/LineageOS)** — moto SM8550 kernel source, devicetrees & modules
-- **[ZyCromerZ](https://github.com/ZyCromerZ/Clang)** — ZyC-Clang toolchain builds
+- **[Neutron Toolchains](https://github.com/Neutron-Toolchains/clang-build-catalogue)** — Neutron Clang toolchain builds
 - **[The Wild James](https://github.com/TheWildJames)** — kernel patches & build pipeline reference *(used with permission)*
 - **[KernelSU-Next](https://github.com/KernelSU-Next/KernelSU-Next)** — KSU-Next implementation
 - **[simonpunk](https://gitlab.com/simonpunk/susfs4ksu)** — SUSFS4KSU patches
