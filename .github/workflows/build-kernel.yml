@@ -141,7 +141,7 @@ jobs:
         run: |
           SHORT_SHA="${{ github.sha }}"
           SHORT_SHA="${SHORT_SHA:0:8}"
-          sed -i "\$s|echo \"\\\$res\"|echo \"\\\$res-ab${SHORT_SHA}\"|" ./scripts/setlocalversion
+          sed -i "\$s|echo \"\\\$res\"|echo \"-Blume-Kernel-${SHORT_SHA}\"|" ./scripts/setlocalversion
           sed -i 's/-dirty//' ./scripts/setlocalversion
           KERNEL_TIMESTAMP=$(git log -1 --format=%ct)
           echo "KBUILD_BUILD_TIMESTAMP=$(date -u -d @${KERNEL_TIMESTAMP} +'%a %b %d %T UTC %Y')" >> $GITHUB_ENV

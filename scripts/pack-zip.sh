@@ -38,7 +38,9 @@ esac
 cd "$WORK_DIR"
 git clone --depth=1 "$AK3_REPO" ak3_tmp
 AK3_SCRIPT="${WORK_DIR}/scripts/anykernel.sh"
-[ -f "$AK3_SCRIPT" ] && cp "$AK3_SCRIPT" ak3_tmp/anykernel.sh
+[ -f "$AK3_SCRIPT" ] || { echo "[ERROR] AnyKernel installer not found: $AK3_SCRIPT"; exit 1; }
+cp "$AK3_SCRIPT" ak3_tmp/anykernel.sh
+grep -Fqx 'supported.versions=13-17' ak3_tmp/anykernel.sh || { echo "[ERROR] Installer has incorrect Android support metadata"; exit 1; }
 cp "$IMAGE" "ak3_tmp/Image"
 
 cd ak3_tmp

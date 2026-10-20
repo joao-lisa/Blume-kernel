@@ -15,8 +15,12 @@ if [ "$ZIP_MODE" = "aio" ] || [ "$ZIP_MODE" = "both" ]; then
   AIO_NAME="AK3-Blume-kernel-${_series}-$(date +'%Y-%m')${SUFFIX}.zip"
 
   git clone --depth=1 "$AK3_REPO" ak3_aio
-  AK3_SCRIPT="${GITHUB_WORKSPACE}/scripts/anykernel.sh"
-  [ -f "$AK3_SCRIPT" ] && cp "$AK3_SCRIPT" ak3_aio/anykernel.sh
+  AK3_SOURCE_ZIP=$(find ./artifacts -type f -name "AK3-*.zip" | sort | head -1)
+  [ -f "$AK3_SOURCE_ZIP" ] || { echo "[ERROR] No variant ZIP found"; exit 1; }
+  unzip -p "$AK3_SOURCE_ZIP" anykernel.sh > ak3_aio/anykernel.sh
+  chmod 755 ak3_aio/anykernel.sh
+  grep -Fqx 'supported.versions=13-17' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer has incorrect Android support metadata"; exit 1; }
+  grep -Fq 'BLUME-KERNEL | RTWO | SM8550' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer branding is missing"; exit 1; }
 
   for ARTIFACT_DIR in ./artifacts/*/; do
     ARTIFACT_ZIP=$(find "$ARTIFACT_DIR" -name "AK3-*.zip" | head -1)

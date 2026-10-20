@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 1
+          ref: ${{ github.sha }}
 
       - name: "📥 Download all artifacts"
         uses: actions/download-artifact@v4.3.0
@@ -91,7 +92,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          overwrite: true  
+          overwrite_files: true
           files: |
             ./release_zips/*.zip
             ./manager_apks/*.apk
@@ -100,6 +101,11 @@ jobs:
           name:       ${{ env.RELEASE_NAME }}
           prerelease: ${{ env.IS_PRERELEASE }}
           body:       ${{ env.RELEASE_BODY }}
+
+      - name: "📝 Update release details"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$RELEASE_TAG" --title "$RELEASE_NAME" --notes "$RELEASE_BODY"
 
       - name: "telegram success"
         if: success()
