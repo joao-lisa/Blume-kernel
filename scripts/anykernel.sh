@@ -26,16 +26,18 @@ PATCH_VBMETA_FLAG=auto
 . tools/ak3-core.sh
 
 print_banner() {
-  ui_print " "
-  ui_print "  BBBB   L      U   U  M   M  EEEEE"
-  ui_print "  B   B  L      U   U  MM MM  E"
-  ui_print "  BBBB   L      U   U  M M M  EEEE"
-  ui_print "  B   B  L      U   U  M   M  E"
-  ui_print "  BBBB   LLLLL  UUUUU  M   M  EEEEE"
-  ui_print " "
-  ui_print "  BLUME-KERNEL | RTWO | SM8550"
-  ui_print "  ANDROID 13-17"
-  ui_print " "
+  ui_print '[INFO] ========================================='
+  ui_print '[INFO]       ____  _'
+  ui_print '[INFO]      | __ )| |_   _ _  _   ___'
+  ui_print "[INFO]      |  _ \| | | | | '_ \` _ \ / _ \\"
+  ui_print '[INFO]      | |_) | | |_| | | | | | |  __/'
+  ui_print '[INFO]      |____/|_|\__,_|_| |_| |_|\___|'
+  ui_print '[INFO]                 KERNEL'
+  ui_print '[INFO] ========================================='
+  ui_print '[INFO]  Device   : Motorola Edge 40 Pro (rtwo)'
+  ui_print '[INFO]  Platform : Snapdragon 8 Gen 2 (SM8550)'
+  ui_print '[INFO]  Security : Baseband-guard LSM'
+  ui_print '[INFO] ========================================='
 }
 
 HAS_KSU=0
