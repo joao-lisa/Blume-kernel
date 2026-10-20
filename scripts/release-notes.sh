@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# release-notes.sh — generate release body
 set -e
 
 : "${BUILD_TYPE:-stable}"
@@ -13,25 +12,20 @@ BODY=""
 
 if [ "$BUILD_TYPE" = "testing" ]; then
   BODY="${BODY}> [!WARNING]"$'\n'
-  BODY="${BODY}> Testing build — debug stripped, perf/sched configs non-default. Expect rough edges."$'\n\n'
+  BODY="${BODY}> Testing build. Use it for validation and expect changes."$'\n\n'
 fi
 
-BODY="${BODY}**KSU-Next Manager:** [CI Build ↗](${KSUN_MANAGER_URL})"$'\n'
-BODY="${BODY}**SukiSU Manager:** [CI Build ↗](${SUKI_MANAGER_URL})"$'\n'
+BODY="${BODY}**KSU-Next manager:** [CI build ↗](${KSUN_MANAGER_URL})"$'\n'
 BODY="${BODY}**SUSFS module:** [${SUSFS_VERSION}](${SUSFS_MODULE_URL})"$'\n'
 BODY="${BODY}**Kernel base:** \`${KERNEL_VERSION}\`"$'\n\n'
-
-BODY="${BODY}**Variants:** Moto (KSU-Next · SukiSU · NoKSU)"$'\n'
+BODY="${BODY}**Variants:** Blume-kernel KSU-Next · Blume-kernel Vanilla"$'\n'
 BODY="${BODY}**Device:** Motorola Edge 40 Pro (rtwo)"$'\n'
-BODY="${BODY}**ROM:** AOSP / LineageOS-based recommended"$'\n'
-BODY="${BODY}**Issues:** [t.me/home_yu_chat](https://t.me/home_yu_chat) · Critical → PM directly"$'\n\n'
-
+BODY="${BODY}**ROM:** AOSP or LineageOS-based"$'\n\n'
 BODY="${BODY}> [!IMPORTANT]"$'\n'
-BODY="${BODY}> **Manager version must match kernel version.** Can't grant root / manager shows errors? Use the **CI Build** links above — not stable releases. Mismatch = can't grant root."$'\n\n'
-
+BODY="${BODY}> The manager version must match the KSU-Next kernel version. Use the CI build linked above when root cannot be granted."$'\n\n'
 BODY="${BODY}**Commit:** [\`${SHORT_SHA}\`](${COMMIT_URL})"$'\n'
-BODY="${BODY}📋 **Per-build details:** [Run #${GITHUB_RUN_NUMBER} summary](${RUN_URL})"$'\n'
-BODY="${BODY}> Full build logs in \`build-audit-logs-*.zip\` below."
+BODY="${BODY}**Build details:** [Run #${GITHUB_RUN_NUMBER}](${RUN_URL})"$'\n'
+BODY="${BODY}> Full logs are attached in the audit archive."
 
 {
   echo "RELEASE_BODY<<EOREL"
@@ -39,4 +33,4 @@ BODY="${BODY}> Full build logs in \`build-audit-logs-*.zip\` below."
   echo "EOREL"
 } >> "${GITHUB_ENV:-/dev/null}"
 
-echo "[OK] Release body generated"
+echo "[OK] Release notes generated"

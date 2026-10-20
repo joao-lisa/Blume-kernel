@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# setup-configs.sh — inject kernel configs into defconfig
-# env: KSU_TYPE, SOURCE_TYPE, DEFCONFIG (full path), KERNEL_DIR
 set -e
 
 : "${KSU_TYPE:?}"
@@ -10,11 +8,9 @@ set -e
 
 CF="$DEFCONFIG"
 
-# Base cleanup
-sed -i 's/ cgroup_disable=pressure//'                    "$CF"
+sed -i 's/ cgroup_disable=pressure//' "$CF"
 sed -i 's/CONFIG_CMDLINE="/&slub_debug=- page_owner=off /' "$CF"
 
-# Strip symbols already in base defconfig to avoid "reassigning" warnings
 for SYM in PID_NS DEBUG_KINFO \
            OVERLAY_FS NET_SCH_CODEL NET_SCH_FQ_CODEL UBSAN \
            LRU_GEN LRU_GEN_ENABLED NET_SCH_FQ DEBUG_MEMORY_INIT PRINTK_CALLER \
@@ -22,7 +18,6 @@ for SYM in PID_NS DEBUG_KINFO \
   sed -i "/^CONFIG_${SYM}[= ]/d; /^# CONFIG_${SYM} /d" "$CF"
 done
 
-# Common configs (all variants)
 cat >> "$CF" << 'EOF'
 CONFIG_TCP_CONG_ADVANCED=y
 CONFIG_TCP_CONG_BBR=y
@@ -67,7 +62,6 @@ CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y
 CONFIG_SCHED_BORE=y
 EOF
 
-# KSU-Next
 if [ "$KSU_TYPE" = "ksun" ]; then
   cat >> "$CF" << 'EOF'
 CONFIG_KSU=y
@@ -84,27 +78,6 @@ CONFIG_KSU_SUSFS_OPEN_REDIRECT=y
 CONFIG_KSU_SUSFS_SUS_SU=y
 CONFIG_BBG=y
 EOF
-
-# SukiSU
-elif [ "$KSU_TYPE" = "suki" ]; then
-  cat >> "$CF" << 'EOF'
-CONFIG_KSU=y
-CONFIG_KSU_SUSFS=y
-CONFIG_KSU_SUSFS_SUS_MAP=y
-CONFIG_KSU_SUSFS_SUS_PATH=y
-CONFIG_KSU_SUSFS_SUS_MOUNT=y
-CONFIG_KSU_SUSFS_SUS_KSTAT=y
-CONFIG_KSU_SUSFS_SPOOF_UNAME=y
-CONFIG_KSU_SUSFS_ENABLE_LOG=y
-CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y
-CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y
-CONFIG_KSU_SUSFS_OPEN_REDIRECT=y
-CONFIG_KSU_SUSFS_SUS_SU=y
-CONFIG_KPM=y
-EOF
-
-# NoKSU — no extras, common configs above apply
-# (only common configs above apply — nothing extra here)
 fi
 
 echo "[OK] Configs written for KSU_TYPE=$KSU_TYPE SOURCE_TYPE=$SOURCE_TYPE"

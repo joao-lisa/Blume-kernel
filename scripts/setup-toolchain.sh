@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# setup-toolchain.sh
 set -e
 
 : "${WORK_DIR:=$GITHUB_WORKSPACE}"

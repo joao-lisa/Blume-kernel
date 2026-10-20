@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-# apply-patches.sh — apply local patches only
-# WildKernels patches are disabled pending SM8550 validation.
-# Re-enable by setting APPLY_WILDKERNELS=1 in workflow dispatch.
-# env: SOURCE_TYPE, KSU_TYPE, BUILD_TYPE, KERNEL_SRC, WORK_DIR
 set -e
 
 : "${KERNEL_SRC:?}"
@@ -14,8 +10,6 @@ set -e
 source /tmp/apply_patch.sh
 cd "$KERNEL_SRC"
 
-# WildKernels patches — disabled until SM8550 compatibility is confirmed.
-# Each patch must be validated individually before re-enabling.
   echo "=== Applying WildKernels patches ==="
   BASE="https://raw.githubusercontent.com/WildKernels/kernel_patches/refs/heads/main/common"
   apply_patch "$BASE/add_limitation_scaling_min_freq.patch"          "add_limitation_scaling_min_freq.patch"
@@ -41,7 +35,6 @@ cd "$KERNEL_SRC"
   apply_patch "$BASE/unicode_bypass_fix_6.1-.patch"          "unicode_bypass_fix_6.1-"
   apply_patch "$BASE/use_unlikely_wrap_cpufreq.patch"        "use_unlikely_wrap_cpufreq.patch"
 
-# Local common patches
 PATCHES_DIR="$WORK_DIR/patches"
 if [ -d "$PATCHES_DIR/common" ]; then
   echo "=== Applying local common patches ==="
@@ -51,7 +44,6 @@ if [ -d "$PATCHES_DIR/common" ]; then
   done
 fi
 
-# Source-type patches
 if [ -d "$PATCHES_DIR/${SOURCE_TYPE}-only" ]; then
   echo "=== Applying $SOURCE_TYPE-specific patches ==="
   for PATCH in "$PATCHES_DIR/${SOURCE_TYPE}-only"/*.patch; do
@@ -60,7 +52,6 @@ if [ -d "$PATCHES_DIR/${SOURCE_TYPE}-only" ]; then
   done
 fi
 
-# Testing patches
 if [ "$BUILD_TYPE" = "testing" ] && [ -d "$PATCHES_DIR/testing" ]; then
   echo "=== Applying testing patches ==="
   for PATCH in "$PATCHES_DIR/testing"/*.patch; do

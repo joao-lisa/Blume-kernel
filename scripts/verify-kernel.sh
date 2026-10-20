@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# verify-kernel.sh — verify built Image, extract version string
 set -e
 
 : "${WORK_DIR:?}"

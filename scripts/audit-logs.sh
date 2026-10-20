@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# audit-logs.sh — collect per-job build logs into a zip
-# env: GH_TOKEN, BUILD_TYPE, KERNEL_VERSION, GITHUB_REPOSITORY, GITHUB_RUN_ID, GITHUB_RUN_NUMBER
 set -e
 
 : "${BUILD_TYPE:-stable}"
@@ -8,10 +6,9 @@ set -e
 mkdir -p ./audit_logs
 
 gh api /repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs \
-  --jq '.jobs[] | select(.name | test("Moto")) | [.id, .name] | @tsv' \
+  --jq '.jobs[] | select(.name | test("Blume-kernel")) | [.id, .name] | @tsv' \
   > /tmp/build_jobs.tsv
 
-# Strip ISO timestamp prefix and ANSI escape codes only — no filtering, no headers
 _clean_log() {
   sed 's/^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}T[0-9]\{2\}:[0-9]\{2\}:[0-9]\{2\}\.[0-9]*Z //' \
   | sed 's/\x1b\[[0-9;]*[mGKHF]//g; s/\x1b(B//g' \
@@ -19,7 +16,6 @@ _clean_log() {
 }
 
 while IFS=$'\t' read -r JOB_ID JOB_NAME; do
-  # Extract variant part after " / " — e.g. "🔨 GKI-Wild / GKI-Wild" → "GKI-Wild"
   SAFE=$(echo "$JOB_NAME" | sed 's|.* / ||' | sed 's/[^a-zA-Z0-9._-]/_/g' | sed 's/__*/_/g; s/^_//; s/_$//')
   gh api /repos/${GITHUB_REPOSITORY}/actions/jobs/${JOB_ID}/logs \
     2>/dev/null \

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# patch helper — source this before calling apply_patch()
 apply_patch() {
   local SRC="$1" NAME="$2" STRICT="${3:-0}"
   local TMP="/tmp/p_${NAME//[^a-zA-Z0-9]/_}"

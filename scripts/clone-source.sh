@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# clone-source.sh — clone moto SM8550 kernel source
-# env: SOURCE_TYPE, KSU_TYPE, KERNEL_SRC (output dir)
 set -e
 
 : "${SOURCE_TYPE:?}"

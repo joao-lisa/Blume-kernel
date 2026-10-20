@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# build.sh — moto SM8550 kernel build
-# env: SOURCE_TYPE, KSU_TYPE, DEFCONFIG, VARIANT, KERNEL_SRC, WORK_DIR, CLANG_DIR
 set -e
 
 : "${SOURCE_TYPE:?}"
@@ -12,7 +10,7 @@ set -e
 OUT_DIR="${WORK_DIR}/out"
 START=$(date +%s)
 
-export KBUILD_BUILD_USER="${KBUILD_BUILD_USER:-superuseryu}"
+export KBUILD_BUILD_USER="${KBUILD_BUILD_USER:-joao-lisa}"
 export KBUILD_BUILD_HOST="${KBUILD_BUILD_HOST:-github}"
 export PATH="${CLANG_DIR}/bin:$PATH"
 
@@ -60,7 +58,6 @@ echo "[${SOURCE_TYPE^^}] Switching to ThinLTO..."
   -e THINLTO
 make "${MAKE_FLAGS[@]}" olddefconfig
 
-# Merge platform fragment
 _FRAG_MERGED=false
 if [ -n "${CLO_FRAGMENT:-}" ] && [ -f "arch/arm64/configs/${CLO_FRAGMENT}" ]; then
   echo "[${SOURCE_TYPE^^}] Merging platform fragment: $CLO_FRAGMENT"
@@ -72,9 +69,6 @@ if [ -n "${CLO_FRAGMENT:-}" ] && [ -f "arch/arm64/configs/${CLO_FRAGMENT}" ]; th
   _FRAG_MERGED=true
 fi
 
-# Merge device-specific extra fragments.
-# moto-kalama.config / moto-kalama-gki.config are required for Moto hardware
-# init (display, thermal, sensors) — missing these causes boot animation loop.
 for _EXTRA in \
   "arch/arm64/configs/vendor/ext_config/moto-kalama.config" \
   "arch/arm64/configs/vendor/ext_config/moto-kalama-gki.config" \
@@ -91,7 +85,6 @@ for _EXTRA in \
   fi
 done
 
-# Force LZ4 ZRAM after all fragment merges (fragments may override the default)
 if $_FRAG_MERGED; then
     echo "[MOTO] Re-enforcing ZRAM_DEF_COMP=lz4 after fragment merge"
     ./scripts/config --file "${OUT_DIR}/dist/.config" \

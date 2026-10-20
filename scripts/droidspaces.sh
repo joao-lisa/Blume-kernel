@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# droidspaces.sh — apply kABI fix + append required kernel configs
-# usage: source scripts/apply_patch.sh && bash scripts/droidspaces.sh <defconfig_path>
 set -e
 source "$(dirname "$0")/apply_patch.sh"
 
