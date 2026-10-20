@@ -20,7 +20,7 @@ if [ "$ZIP_MODE" = "aio" ] || [ "$ZIP_MODE" = "both" ]; then
   unzip -p "$AK3_SOURCE_ZIP" anykernel.sh > ak3_aio/anykernel.sh
   chmod 755 ak3_aio/anykernel.sh
   grep -Fqx 'supported.versions=13-17' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer has incorrect Android support metadata"; exit 1; }
-  grep -Fq 'BLUME-KERNEL | RTWO | SM8550' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer branding is missing"; exit 1; }
+  grep -Eiq '^[[:space:]]*kernel\.string=blume-kernel[[:space:]]*\|[[:space:]]*rtwo[[:space:]]*\|[[:space:]]*sm8550[[:space:]]*$' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer branding is missing"; exit 1; }
   grep -Eq '^[[:space:]]*split_boot[[:space:]]*$' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer does not read the boot image"; exit 1; }
   grep -Eq '^[[:space:]]*flash_boot[[:space:]]*$' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer does not flash the kernel image"; exit 1; }
   grep -Eq '^[[:space:]]*write_boot[[:space:]]*$' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer does not rebuild ramdisk boot images"; exit 1; }
@@ -36,10 +36,11 @@ if [ "$ZIP_MODE" = "aio" ] || [ "$ZIP_MODE" = "both" ]; then
       *) IMG_NAME="Image.${DIR_NAME}" ;;
     esac
 
-    mkdir -p /tmp/aio_extract
-    unzip -o "$ARTIFACT_ZIP" Image -d /tmp/aio_extract/ 2>/dev/null || continue
-    cp /tmp/aio_extract/Image "ak3_aio/${IMG_NAME}"
-    rm -rf /tmp/aio_extract
+    EXTRACT_DIR=$(mktemp -d)
+    if unzip -o "$ARTIFACT_ZIP" Image -d "$EXTRACT_DIR/" 2>/dev/null; then
+      cp "$EXTRACT_DIR/Image" "ak3_aio/${IMG_NAME}"
+    fi
+    rm -r -- "$EXTRACT_DIR"
   done
 
   ls -lh ak3_aio/Image.blume.* 2>/dev/null || { echo "[ERROR] No named images found"; exit 1; }

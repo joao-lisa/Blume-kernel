@@ -4,10 +4,12 @@ set -e
 : "${BUILD_TYPE:-stable}"
 
 VERSION_FILE=$(find ./artifacts -name "kernel_version.txt" | head -1)
-KERNEL_VERSION=$([ -f "$VERSION_FILE" ] && cat "$VERSION_FILE" || echo "5.15.x")
+KERNEL_VERSION=$([ -f "$VERSION_FILE" ] && tr -d '[:space:]' < "$VERSION_FILE" || true)
+KERNEL_VERSION="${KERNEL_VERSION:-5.15.x}"
 
 UNAME_FILE=$(find ./artifacts -name "kernel_uname.txt" | head -1)
-KERNEL_UNAME=$([ -f "$UNAME_FILE" ] && cat "$UNAME_FILE" || echo "$KERNEL_VERSION")
+KERNEL_UNAME=$([ -f "$UNAME_FILE" ] && tr -d '[:space:]' < "$UNAME_FILE" || true)
+KERNEL_UNAME="${KERNEL_UNAME:-$KERNEL_VERSION}"
 
 _susfs_raw=$(curl -sf "https://api.github.com/repos/sidex15/susfs4ksu-module/tags" 2>/dev/null | jq -r '.[0].name // empty' 2>/dev/null | tr -d ' \n')
 SUSFS_VERSION="${_susfs_raw:-v1.5.2+_R27}"
