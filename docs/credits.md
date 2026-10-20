@@ -4,10 +4,9 @@
 
 ## Maintainer
 
-**superuseryu** — kernel maintainer for rtwo (Snapdragon 8 Gen 2 / SM8550)
+**joao-lisa** — Blume-kernel maintainer
 
-- Telegram: [t.me/home_yu_chat](https://t.me/home_yu_chat)
-- Ko-fi: [ko-fi.com/superuseryu](https://ko-fi.com/superuseryu)
+**superuseryu** — original rtwo kernel maintainer (Snapdragon 8 Gen 2 / SM8550)
 
 ---
 
@@ -17,7 +16,6 @@
 - **[ZyCromerZ](https://github.com/ZyCromerZ/Clang)** — ZyC-Clang toolchain builds
 - **[The Wild James](https://github.com/TheWildJames)** — kernel patches & build pipeline reference *(used with permission)*
 - **[KernelSU-Next](https://github.com/KernelSU-Next/KernelSU-Next)** — KSU-Next implementation
-- **[SukiSU-Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra)** — SukiSU implementation
 - **[simonpunk](https://gitlab.com/simonpunk/susfs4ksu)** — SUSFS4KSU patches
 - **[sidex15](https://github.com/sidex15/susfs4ksu-module)** — SUSFS systemless module
 - **[ravindu644](https://github.com/ravindu644/droidspaces)** — Droidspaces

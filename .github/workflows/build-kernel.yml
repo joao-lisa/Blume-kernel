@@ -4,13 +4,13 @@ on:
   workflow_call:
     inputs:
       variant_name:  { type: string, required: true }
-      source_type:   { type: string, required: true }   # moto
-      ksu_type:      { type: string, required: true }   # ksun | suki | none
+      source_type:   { type: string, required: true }
+      ksu_type:      { type: string, required: true }
       zip_prefix:    { type: string, required: true }
       artifact_name: { type: string, required: true }
       defconfig:     { type: string, required: true }
       clo_fragment:  { type: string, required: false }
-      build_type:    { type: string, required: true }   # stable | testing
+      build_type:    { type: string, required: true }
 
 env:
   OUT_DIR: "out"
@@ -146,11 +146,7 @@ jobs:
           KERNEL_TIMESTAMP=$(git log -1 --format=%ct)
           echo "KBUILD_BUILD_TIMESTAMP=$(date -u -d @${KERNEL_TIMESTAMP} +'%a %b %d %T UTC %Y')" >> $GITHUB_ENV
           echo "SOURCE_DATE_EPOCH=${KERNEL_TIMESTAMP}" >> $GITHUB_ENV
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add . && git commit -m "clean dirty flag" || true
-
-      - name: "🚀 Build kernel"
+      - name: "build kernel"
         id: build
         timeout-minutes: 50
         env:
@@ -171,16 +167,7 @@ jobs:
       - name: "🔍 Verify kernel"
         run: bash scripts/verify-kernel.sh
 
-      - name: "💉 KPM patch"
-        if: inputs.ksu_type == 'suki'
-        working-directory: ${{ env.WORK_DIR }}/out/dist
-        run: |
-          curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU_patch/refs/heads/main/kpm/patch_linux" \
-            -o patch_linux
-          chmod +x patch_linux && ./patch_linux
-          rm -f Image && mv oImage Image
-
-      - name: "📋 Build summary"
+      - name: "build summary"
         if: always()
         env:
           VARIANT:     ${{ inputs.variant_name }}
@@ -202,7 +189,7 @@ jobs:
           RUN_NUMBER:  ${{ github.run_number }}
         run: bash scripts/notify.sh variant-failure
 
-      - name: "📦 Pack ZIP"
+      - name: "pack zip"
         env:
           ZIP_PREFIX:  ${{ inputs.zip_prefix }}
           KSU_TYPE:    ${{ inputs.ksu_type }}
@@ -227,7 +214,5 @@ jobs:
             ${{ env.WORK_DIR }}/out/dist/kernel_version.txt
             ${{ env.WORK_DIR }}/out/dist/kernel_uname.txt
             ${{ env.WORK_DIR }}/ksun_tag.txt
-            ${{ env.WORK_DIR }}/suki_ksu_tag.txt
             ${{ env.WORK_DIR }}/ksun_version.txt
-            ${{ env.WORK_DIR }}/suki_version.txt
           retention-days: 1

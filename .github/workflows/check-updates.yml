@@ -6,7 +6,7 @@ env:
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * 1'   # every Monday at 02:00 UTC
+    - cron: '0 2 * * 1'
 
 permissions:
   contents: write
@@ -31,22 +31,20 @@ jobs:
           jq -n \
             --arg moto  "$CHECK_MOTO_SUB" \
             --arg ksun  "$CHECK_KSUN_TAG" \
-            --arg suki  "$CHECK_SUKI_TAG" \
             --arg susfs "$CHECK_SUSFS_TAG" \
             '{
               moto_sublevel: $moto,
               ksun_tag:      $ksun,
-              suki_tag:      $suki,
               susfs_tag:     $susfs
             }' > sources/source-pins.json
 
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add sources/source-pins.json
-          git commit -m "chore: update source-pins.json [skip ci]"
+          git commit -m "chore: update source pins [skip ci]"
           git push
 
-      - name: "📣 Telegram report"
+      - name: "telegram report"
         if: always()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

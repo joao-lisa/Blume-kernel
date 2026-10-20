@@ -7,8 +7,8 @@ env:
 on:
   workflow_call:
     inputs:
-      zip_mode:   { type: string, required: true }   # per-variant | aio
-      build_type: { type: string, required: true }   # stable | testing
+      zip_mode:   { type: string, required: true }
+      build_type: { type: string, required: true }
       start_time: { type: string, required: true }
       workflow_type: { type: string, default: aio }
 
@@ -43,13 +43,11 @@ jobs:
           BUILD_TYPE: ${{ inputs.build_type }}
         run: bash scripts/pack-release.sh
 
-      - name: "📦 Fetch manager APKs"
+      - name: "fetch manager apk"
         env:
           GITHUB_TOKEN:              ${{ secrets.GITHUB_TOKEN }}
           KSUN_MANAGER_ARTIFACT_ID:  ${{ env.KSUN_MANAGER_ARTIFACT_ID }}
-          SUKI_MANAGER_ARTIFACT_ID:  ${{ env.SUKI_MANAGER_ARTIFACT_ID }}
           KSUN_VERSION:              ${{ env.KSUN_VERSION }}
-          SUKI_VERSION:              ${{ env.SUKI_VERSION }}
         run: bash scripts/fetch-manager-apks.sh
 
       - name: "📋 Build summary"
@@ -103,7 +101,7 @@ jobs:
           prerelease: ${{ env.IS_PRERELEASE }}
           body:       ${{ env.RELEASE_BODY }}
 
-      - name: "🎉 Telegram — success"
+      - name: "telegram success"
         if: success()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

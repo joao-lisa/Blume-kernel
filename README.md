@@ -1,4 +1,4 @@
-# Seiran Kernel
+# Blume-kernel
 
 Automated kernel builder for **Motorola Edge 40 Pro (rtwo)** — SM8550 / Snapdragon 8 Gen 2, Linux 5.15 (LineageOS).
 

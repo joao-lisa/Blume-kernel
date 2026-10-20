@@ -4,9 +4,8 @@
 
 | Variant | Source | Root | Extras |
 |---------|--------|------|--------|
-| Moto-Ksun | LineageOS SM8550 | KernelSU-Next + SUSFS | BBG |
-| Moto-SukiSU | LineageOS SM8550 | SukiSU-Ultra + SUSFS | KPM |
-| Moto-NoKSU | LineageOS SM8550 | Vanilla | — |
+| Blume-KSU-Next | LineageOS SM8550 | KernelSU-Next + SUSFS | BBG |
+| Blume-Vanilla | LineageOS SM8550 | Vanilla | — |
 
 All variants include: **WildKernels optimization patches** · **LZ4 ZRAM** · **Thin LTO** · **Droidspaces support**
 
@@ -26,7 +25,7 @@ kABI fix applied for GKI < 6.12 to prevent vendor module crashes on boot.
 
 ## Build Details
 
-| | Moto (all variants) |
+| | Blume-kernel |
 |--|---------------------|
 | Source | `LineageOS/android_kernel_motorola_sm8550` |
 | Branch | `lineage-23.2` |

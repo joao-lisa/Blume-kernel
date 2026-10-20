@@ -9,7 +9,7 @@
 | Secret | Value |
 |--------|-------|
 | `TELEGRAM_BOT_TOKEN` | your bot token |
-| `TELEGRAM_CHAT_ID` | your chat ID |
+| `TELEGRAM_CHAT_ID` | your group ID |
 | `TELEGRAM_TOPIC_ID` | (Optional) topic message thread ID |
 
 ---
@@ -25,6 +25,6 @@ Actions tab → **Build Kernels — AIO** → **Run workflow**
 | `ZIP packaging` | `per-variant` · `aio` · `both` | `per-variant` |
 | `Build type` | `stable` · `testing` | `stable` |
 
-**Variants built per run:** Moto-Ksun · Moto-SukiSU · Moto-NoKSU
+**Variants built per run:** Blume-KSU-Next · Blume-Vanilla
 
 > `testing` builds append `-testing` to the ZIP name and mark the GitHub release as pre-release.
