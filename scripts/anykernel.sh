@@ -27,8 +27,10 @@ PATCH_VBMETA_FLAG=auto
 
 HAS_KSU=0
 HAS_VANILLA=0
+HAS_SINGLE=0
 [ -f "$AKHOME/Image.blume.ksu" ] && HAS_KSU=1
 [ -f "$AKHOME/Image.blume.vanilla" ] && HAS_VANILLA=1
+[ -f "$AKHOME/Image" ] && HAS_SINGLE=1
 TOTAL=$((HAS_KSU + HAS_VANILLA))
 SELECTED_IMAGE=""
 
@@ -72,7 +74,10 @@ elif [ "$HAS_VANILLA" = "1" ]; then
 elif [ "$HAS_KSU" = "1" ]; then
   SELECTED_IMAGE="Image.blume.ksu"
   ui_print "  >> KSU-Next + SUSFS"
+elif [ "$HAS_SINGLE" = "1" ]; then
+  SELECTED_IMAGE="Image"
+  ui_print "  >> Current variant"
 fi
 
 [ -n "$SELECTED_IMAGE" ] || abort "No kernel image found"
-mv "$AKHOME/$SELECTED_IMAGE" "$AKHOME/Image"
+[ "$SELECTED_IMAGE" = "Image" ] || mv "$AKHOME/$SELECTED_IMAGE" "$AKHOME/Image"
