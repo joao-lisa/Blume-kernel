@@ -21,6 +21,9 @@ if [ "$ZIP_MODE" = "aio" ] || [ "$ZIP_MODE" = "both" ]; then
   chmod 755 ak3_aio/anykernel.sh
   grep -Fqx 'supported.versions=13-17' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer has incorrect Android support metadata"; exit 1; }
   grep -Fq 'BLUME-KERNEL | RTWO | SM8550' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer branding is missing"; exit 1; }
+  grep -Eq '^[[:space:]]*split_boot[[:space:]]*$' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer does not read the boot image"; exit 1; }
+  grep -Eq '^[[:space:]]*flash_boot[[:space:]]*$' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer does not flash the kernel image"; exit 1; }
+  grep -Eq '^[[:space:]]*write_boot[[:space:]]*$' ak3_aio/anykernel.sh || { echo "[ERROR] AIO installer does not rebuild ramdisk boot images"; exit 1; }
 
   for ARTIFACT_DIR in ./artifacts/*/; do
     ARTIFACT_ZIP=$(find "$ARTIFACT_DIR" -name "AK3-*.zip" | head -1)

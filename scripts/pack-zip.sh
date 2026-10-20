@@ -41,6 +41,9 @@ AK3_SCRIPT="${WORK_DIR}/scripts/anykernel.sh"
 [ -f "$AK3_SCRIPT" ] || { echo "[ERROR] AnyKernel installer not found: $AK3_SCRIPT"; exit 1; }
 cp "$AK3_SCRIPT" ak3_tmp/anykernel.sh
 grep -Fqx 'supported.versions=13-17' ak3_tmp/anykernel.sh || { echo "[ERROR] Installer has incorrect Android support metadata"; exit 1; }
+grep -Eq '^[[:space:]]*split_boot[[:space:]]*$' ak3_tmp/anykernel.sh || { echo "[ERROR] Installer does not read the boot image"; exit 1; }
+grep -Eq '^[[:space:]]*flash_boot[[:space:]]*$' ak3_tmp/anykernel.sh || { echo "[ERROR] Installer does not flash the kernel image"; exit 1; }
+grep -Eq '^[[:space:]]*write_boot[[:space:]]*$' ak3_tmp/anykernel.sh || { echo "[ERROR] Installer does not rebuild ramdisk boot images"; exit 1; }
 cp "$IMAGE" "ak3_tmp/Image"
 
 cd ak3_tmp

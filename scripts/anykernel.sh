@@ -99,3 +99,22 @@ fi
 
 [ -n "$SELECTED_IMAGE" ] || abort "No kernel image found"
 [ "$SELECTED_IMAGE" = "Image" ] || mv "$AKHOME/$SELECTED_IMAGE" "$AKHOME/Image"
+
+ui_print " "
+ui_print "  READING ACTIVE BOOT IMAGE"
+split_boot
+
+HAS_RAMDISK=0
+for RAMDISK_IMAGE in "$SPLITIMG"/ramdisk.cpio*; do
+  [ -f "$RAMDISK_IMAGE" ] && { HAS_RAMDISK=1; break; }
+done
+
+ui_print "  FLASHING BLUME-KERNEL"
+if [ "$HAS_RAMDISK" = "1" ]; then
+  unpack_ramdisk
+  write_boot
+else
+  flash_boot
+fi
+
+ui_print "  INSTALLATION COMPLETE"
