@@ -12,6 +12,9 @@ KSUN_TAG=$(_curl "https://api.github.com/repos/KernelSU-Next/KernelSU-Next/tags"
 SUSFS_TAG=$(_curl "https://api.github.com/repos/sidex15/susfs4ksu-module/tags" | jq -r 'if type=="array" and length>0 then .[0].name else "unknown" end' 2>/dev/null || echo "unknown")
 [ -n "$SUSFS_TAG" ] || SUSFS_TAG="unknown"
 
+WILDKERNELS_COMMIT=$(_curl "https://api.github.com/repos/WildKernels/kernel_patches/commits/main" | jq -r '.sha // "unknown"' 2>/dev/null || echo "unknown")
+[ -n "$WILDKERNELS_COMMIT" ] || WILDKERNELS_COMMIT="unknown"
+
 MOTO_RAW=$(_curl "https://raw.githubusercontent.com/LineageOS/android_kernel_motorola_sm8550/lineage-23.2/Makefile")
 MOTO_SUB=$(echo "$MOTO_RAW" | awk -F' *= *' '/^VERSION / {v=$2} /^PATCHLEVEL / {p=$2} /^SUBLEVEL / {s=$2} END {if (v && p && s) print "v"v"."p"."s; else print "unknown"}')
 MOTO_SUB="${MOTO_SUB:-unknown}"
@@ -19,10 +22,12 @@ MOTO_SUB="${MOTO_SUB:-unknown}"
 PIN_MOTO=$(_pin "moto_sublevel")
 PIN_KSUN=$(_pin "ksun_tag")
 PIN_SUSFS=$(_pin "susfs_tag")
+PIN_WILDKERNELS=$(_pin "wildkernels_commit")
 UPDATES=()
 [ "$MOTO_SUB" != "$PIN_MOTO" ] && UPDATES+=("moto: ${PIN_MOTO} -> ${MOTO_SUB}")
 [ "$KSUN_TAG" != "$PIN_KSUN" ] && UPDATES+=("ksu-next: ${PIN_KSUN} -> ${KSUN_TAG}")
 [ "$SUSFS_TAG" != "$PIN_SUSFS" ] && UPDATES+=("susfs: ${PIN_SUSFS} -> ${SUSFS_TAG}")
+[ "$WILDKERNELS_COMMIT" != "$PIN_WILDKERNELS" ] && UPDATES+=("wildkernels: ${PIN_WILDKERNELS:0:9} -> ${WILDKERNELS_COMMIT:0:9}")
 
 if [ "${#UPDATES[@]}" -gt 0 ]; then
   HAS_UPDATE="true"
@@ -35,6 +40,7 @@ fi
 {
   echo "CHECK_KSUN_TAG=$KSUN_TAG"
   echo "CHECK_SUSFS_TAG=$SUSFS_TAG"
+  echo "CHECK_WILDKERNELS_COMMIT=$WILDKERNELS_COMMIT"
   echo "CHECK_MOTO_SUB=$MOTO_SUB"
   echo "HAS_UPDATE=$HAS_UPDATE"
   echo "UPDATE_DETAIL<<EOF"

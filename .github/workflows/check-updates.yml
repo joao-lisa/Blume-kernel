@@ -32,9 +32,11 @@ jobs:
             --arg moto  "$CHECK_MOTO_SUB" \
             --arg ksun  "$CHECK_KSUN_TAG" \
             --arg susfs "$CHECK_SUSFS_TAG" \
+            --arg wild  "$CHECK_WILDKERNELS_COMMIT" \
             '{
               moto_sublevel: $moto,
               ksun_tag:      $ksun,
+              wildkernels_commit: $wild,
               susfs_tag:     $susfs
             }' > sources/source-pins.json
 

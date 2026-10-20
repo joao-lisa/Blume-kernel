@@ -81,6 +81,7 @@ elif [ "$MODE" = "check" ]; then
   MSG="${MSG}${STATUS_LINE}%0A%0A"
   MSG="${MSG}<b>Moto 5.15:</b> <code>${CHECK_MOTO_SUB:-?}</code>%0A"
   MSG="${MSG}<b>KSU-Next:</b> <code>${CHECK_KSUN_TAG:-?}</code>%0A"
+  MSG="${MSG}<b>WildKernels:</b> <code>${CHECK_WILDKERNELS_COMMIT:0:9}</code>%0A"
   MSG="${MSG}<b>SUSFS:</b> <code>${DISPLAY_SUSFS_TAG}</code>%0A"
   if [ "${HAS_UPDATE:-false}" = "true" ] && [ -n "${UPDATE_DETAIL:-}" ]; then
     MSG="${MSG}%0A<b>Changes:</b>%0A"

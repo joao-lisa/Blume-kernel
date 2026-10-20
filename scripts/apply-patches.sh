@@ -10,34 +10,42 @@ set -e
 source /tmp/apply_patch.sh
 cd "$KERNEL_SRC"
 
-  echo "=== Applying WildKernels patches ==="
-  BASE="https://raw.githubusercontent.com/WildKernels/kernel_patches/refs/heads/main/common"
-  apply_patch "$BASE/add_limitation_scaling_min_freq.patch"          "add_limitation_scaling_min_freq.patch"
-  apply_patch "$BASE/re_write_limitation_scaling_min_freq.patch"          "re_write_limitation_scaling_min_freq.patch"
-  apply_patch "$BASE/silence_irq_cpu_logspam.patch"          "silence_irq_cpu_logspam"
-  apply_patch "$BASE/silence_system_logspam.patch"           "silence_system_logspam"
-  apply_patch "$BASE/reduce_cache_pressure.patch"            "reduce_cache_pressure"
-  apply_patch "$BASE/minimise_wakeup_time.patch"             "minimise_wakeup_time"
-  apply_patch "$BASE/reduce_freeze_timeout.patch"            "reduce_freeze_timeout"
-  apply_patch "$BASE/avoid_extra_s2idle_wake_attempts.patch" "avoid_extra_s2idle_wake_attempts"
-  apply_patch "$BASE/adjust_cpu_scan_order.patch"            "adjust_cpu_scan_order"
-  apply_patch "$BASE/disable_cache_hot_buddy.patch"          "disable_cache_hot_buddy"
-  apply_patch "$BASE/increase_ext4_default_commit_age.patch" "increase_ext4_default_commit_age"
-  apply_patch "$BASE/add_timeout_wakelocks_globally.patch"   "add_timeout_wakelocks_globally"
-  apply_patch "$BASE/clear_page_16bytes_align.patch"         "clear_page_16bytes_align"
-  apply_patch "$BASE/f2fs_enlarge_min_fsync_blocks.patch"    "f2fs_enlarge_min_fsync_blocks"
-  apply_patch "$BASE/f2fs_reduce_congestion.patch"           "f2fs_reduce_congestion"
-  apply_patch "$BASE/file_struct_8bytes_align.patch"         "file_struct_8bytes_align"
-  apply_patch "$BASE/int_sqrt.patch"                         "int_sqrt"
-  apply_patch "$BASE/IPv6_NAT_FIX.patch"                     "IPv6_NAT_FIX"
-  apply_patch "$BASE/mem_opt_prefetch.patch"                 "mem_opt_prefetch"
-  apply_patch "$BASE/optimized_mem_operations.patch"         "optimized_mem_operations"
-  apply_patch "$BASE/unicode_bypass_fix_6.1-.patch"          "unicode_bypass_fix_6.1-"
-  apply_patch "$BASE/use_unlikely_wrap_cpufreq.patch"        "use_unlikely_wrap_cpufreq.patch"
+WILDKERNELS_REF=$(jq -r '.wildkernels_commit // "main"' "$WORK_DIR/sources/source-pins.json" 2>/dev/null || echo "main")
+WILDKERNELS_BASE="https://raw.githubusercontent.com/WildKernels/kernel_patches/${WILDKERNELS_REF}/common"
+WILDKERNELS_PATCHES=(
+  add_limitation_scaling_min_freq.patch
+  re_write_limitation_scaling_min_freq.patch
+  silence_irq_cpu_logspam.patch
+  silence_system_logspam.patch
+  reduce_cache_pressure.patch
+  minimise_wakeup_time.patch
+  reduce_freeze_timeout.patch
+  avoid_extra_s2idle_wake_attempts.patch
+  adjust_cpu_scan_order.patch
+  disable_cache_hot_buddy.patch
+  increase_ext4_default_commit_age.patch
+  add_timeout_wakelocks_globally.patch
+  clear_page_16bytes_align.patch
+  f2fs_enlarge_min_fsync_blocks.patch
+  f2fs_reduce_congestion.patch
+  file_struct_8bytes_align.patch
+  int_sqrt.patch
+  IPv6_NAT_FIX.patch
+  mem_opt_prefetch.patch
+  optimized_mem_operations.patch
+  optimise_memcmp.patch
+  increase_sk_mem_packets.patch
+  reduce_gc_thread_sleep_time.patch
+  unicode_bypass_fix_6.1-.patch
+  use_unlikely_wrap_cpufreq.patch
+)
+
+for PATCH in "${WILDKERNELS_PATCHES[@]}"; do
+  apply_patch "$WILDKERNELS_BASE/$PATCH" "${PATCH%.patch}"
+done
 
 PATCHES_DIR="$WORK_DIR/patches"
 if [ -d "$PATCHES_DIR/common" ]; then
-  echo "=== Applying local common patches ==="
   for PATCH in "$PATCHES_DIR/common"/*.patch; do
     [ -f "$PATCH" ] || continue
     apply_patch "$PATCH" "$(basename "$PATCH" .patch)"
@@ -45,7 +53,6 @@ if [ -d "$PATCHES_DIR/common" ]; then
 fi
 
 if [ -d "$PATCHES_DIR/${SOURCE_TYPE}-only" ]; then
-  echo "=== Applying $SOURCE_TYPE-specific patches ==="
   for PATCH in "$PATCHES_DIR/${SOURCE_TYPE}-only"/*.patch; do
     [ -f "$PATCH" ] || continue
     apply_patch "$PATCH" "$(basename "$PATCH" .patch)"
@@ -53,11 +60,10 @@ if [ -d "$PATCHES_DIR/${SOURCE_TYPE}-only" ]; then
 fi
 
 if [ "$BUILD_TYPE" = "testing" ] && [ -d "$PATCHES_DIR/testing" ]; then
-  echo "=== Applying testing patches ==="
   for PATCH in "$PATCHES_DIR/testing"/*.patch; do
     [ -f "$PATCH" ] || continue
     apply_patch "$PATCH" "$(basename "$PATCH" .patch)"
   done
 fi
 
-echo "[OK] All patches applied"
+echo "[OK] All patches applied from WildKernels ${WILDKERNELS_REF}"
